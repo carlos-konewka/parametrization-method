@@ -27,3 +27,25 @@ class TestJet(unittest.TestCase):
         self.assertIsInstance(data, np.ndarray)
         self.assertEquals(data.dtype, 'float64')
         self.assertListEqual(list(data), list(data_sequence))
+
+    def test_addition(self):
+        # given
+        u = Jet([3, 1, 3, 2])
+        v = Jet([3, 1, 2, 4])
+        # when
+        result = u + v
+        # then
+        result_data = result.data
+        expected = np.asarray([6, 2, 5, 6], dtype=np.float64)
+        self.assertTrue(np.allclose(result_data, expected))
+
+    def test_addition_different_lengths(self):
+        # given
+        u = Jet([3, 1, 3, 2, 4])
+        v = Jet([3, 1, 2, 4])
+        # when
+        result = u + v
+        # then
+        result_data = result.data
+        expected = np.asarray([6, 2, 5, 6, 4], dtype=np.float64)
+        self.assertTrue(np.allclose(result_data, expected))
