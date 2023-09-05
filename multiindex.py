@@ -17,7 +17,7 @@ class Multiindex:
         return len(self._data)
 
     def __eq__(self, other: Multiindex) -> bool:
-        if len(self) == len(other):
+        if len(self._data) == len(other._data):
             return np.array_equiv(self._data, other._data)
         d1, d2 = (self._data, other._data) if len(self._data) < len(other._data) else (other._data, self._data)
         short_len = len(d1)
@@ -34,3 +34,25 @@ class Multiindex:
         if not self._data[len(other._data):].any():
             return True
         return False
+
+    def __lt__(self, other: Multiindex) -> bool:
+        if self <= other and not self == other:
+            return True
+        return False
+
+    def __ne__(self, other: Multiindex) -> bool:
+        return not self == other
+
+    def __ge__(self, other: Multiindex) -> bool:
+        return other <= self
+
+    def __gt__(self, other: Multiindex) -> bool:
+        return other < self
+
+    def __add__(self, other: Multiindex) -> Multiindex:
+        max_len = max(len(self._data), len(other._data))
+        u, v = (self._data, other._data) if len(self._data) <= len(other._data) else (other._data, self._data)
+        how_many_zeros = max_len - len(u)
+        u = np.append(u, np.zeros(how_many_zeros, dtype=int))
+        result = u + v
+        return Multiindex(result)

@@ -117,6 +117,116 @@ class TestMultiindex(unittest.TestCase):
         # then
         self.assertFalse(leq)
 
+    def test_less(self):
+        # given
+        u = Multiindex([1, 2, 3])
+        v = Multiindex([3, 3, 3])
+        # when
+        le = u < v
+        # then
+        self.assertTrue(le)
+
+    def test_non_less_eq(self):
+        # given
+        u = Multiindex([3, 0, 4])
+        v = Multiindex([3, 0, 4])
+        # when
+        le = u < v
+        # then
+        self.assertFalse(le)
+
+    def test_non_less_ge(self):
+        # given
+        u = Multiindex([3, 1, 4])
+        v = Multiindex([3, 0, 4])
+        # when
+        le = u < v
+        # then
+        self.assertFalse(le)
+
+    def test_not_equal_if_true(self):
+        # given
+        u = Multiindex([3, 1, 4])
+        v = Multiindex([3, 0, 4])
+        # when
+        neq = u != v
+        # then
+        self.assertTrue(neq)
+
+    def test_not_equal_if_false(self):
+        # given
+        u = Multiindex([3, 0, 4, 0])
+        v = Multiindex([3, 0, 4])
+        # when
+        neq = u != v
+        # then
+        self.assertFalse(neq)
+
+    def test_gt_if_false(self):
+        # given
+        u = Multiindex([3, 0, 4, 0])
+        v = Multiindex([3, 0, 5])
+        # when
+        greater = u > v
+        # then
+        self.assertFalse(greater)
+
+    def test_gt_if_true(self):
+        # given
+        u = Multiindex([3, 0, 4, 0])
+        v = Multiindex([3, 0, 3])
+        # when
+        greater = u > v
+        # then
+        self.assertTrue(greater)
+
+    def test_ge_if_eq(self):
+        # given
+        u = Multiindex([3, 0, 3])
+        v = Multiindex([3, 0, 3])
+        # when
+        ge = u >= v
+        # then
+        self.assertTrue(ge)
+
+    def test_ge_if_greater(self):
+        # given
+        u = Multiindex([3, 2, 3])
+        v = Multiindex([3, 0, 3])
+        # when
+        ge = u >= v
+        # then
+        self.assertTrue(ge)
+
+    def test_ge_if_false(self):
+        # given
+        u = Multiindex([2, 0, 3])
+        v = Multiindex([3, 0, 3])
+        # when
+        ge = u >= v
+        # then
+        self.assertFalse(ge)
+
+    def test_addition_when_have_same_length(self):
+        # give
+        u = Multiindex([2, 1, 0])
+        v = Multiindex([4, 1, 1])
+        # when
+        result = u + v
+        # then
+        expected = Multiindex([6, 2, 1])
+        self.assertEqual(result, expected)
+
+    def test_addition_when_have_different_lengths(self):
+        # give
+        u = Multiindex([2, 1, 0, 2, 0])
+        v = Multiindex([4, 1, 1])
+        # when
+        result = u + v
+        # then
+        expected = Multiindex([6, 2, 1, 2])
+        self.assertEqual(result, expected)
+
 
 if __name__ == '__main__':
     unittest.main()
