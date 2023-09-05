@@ -48,11 +48,3 @@ class Multiindex:
 
     def __gt__(self, other: Multiindex) -> bool:
         return other < self
-
-    def __add__(self, other: Multiindex) -> Multiindex:
-        max_len = max(len(self._data), len(other._data))
-        u, v = (self._data, other._data) if len(self._data) <= len(other._data) else (other._data, self._data)
-        how_many_zeros = max_len - len(u)
-        u = np.append(u, np.zeros(how_many_zeros, dtype=int))
-        result = u + v
-        return Multiindex(result)

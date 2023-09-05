@@ -207,26 +207,6 @@ class TestMultiindex(unittest.TestCase):
         # then
         self.assertFalse(ge)
 
-    def test_addition_when_have_same_length(self):
-        # give
-        u = Multiindex([2, 1, 0])
-        v = Multiindex([4, 1, 1])
-        # when
-        result = u + v
-        # then
-        expected = Multiindex([6, 2, 1])
-        self.assertEqual(result, expected)
-
-    def test_addition_when_have_different_lengths(self):
-        # give
-        u = Multiindex([2, 1, 0, 2, 0])
-        v = Multiindex([4, 1, 1])
-        # when
-        result = u + v
-        # then
-        expected = Multiindex([6, 2, 1, 2])
-        self.assertEqual(result, expected)
-
 
 if __name__ == '__main__':
     unittest.main()
