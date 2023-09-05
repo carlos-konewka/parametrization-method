@@ -49,3 +49,14 @@ class TestJet(unittest.TestCase):
         result_data = result.data
         expected = np.asarray([6, 2, 5, 6, 4], dtype=np.float64)
         self.assertTrue(np.allclose(result_data, expected))
+
+    def test_subtraction(self):
+        # given
+        u = Jet([3, 1.4, -3, 2])
+        v = Jet([3, 1, 2, 4])
+        # when
+        result = u - v
+        # then
+        result_data = result.data
+        expected = np.asarray([0, 0.4, -5, -2], dtype=np.float64)
+        self.assertTrue(np.allclose(result_data, expected))

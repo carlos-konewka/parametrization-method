@@ -17,6 +17,11 @@ class Jet:
         result = data1 + data2
         return Jet(result)
 
+    def __sub__(self, other: Jet) -> Jet:
+        data1, data2 = Jet._align_with_zeros(self._data, other._data)
+        result = data1 - data2
+        return Jet(result)
+
     @staticmethod
     def _align_with_zeros(array1: np.ndarray, array2: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
         max_len = max(len(array1), len(array2))
