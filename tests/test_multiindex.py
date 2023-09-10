@@ -50,28 +50,6 @@ class TestMultiindex(unittest.TestCase):
         # then
         self.assertFalse(equal)
 
-    def test_equality_when_different_lengths(self):
-        # given
-        u_data_sequence = np.asarray([1, 2, 3, 4, 0])
-        v_data_sequence = np.asarray([1, 2, 3, 4])
-        u = Multiindex(u_data_sequence)
-        v = Multiindex(v_data_sequence)
-        # when
-        equal = u == v
-        # then
-        self.assertTrue(equal)
-
-    def test_inequality_when_different_lengths(self):
-        # given
-        u_data_sequence = np.asarray([1, 2, 3, 4, 8])
-        v_data_sequence = np.asarray([1, 2, 3, 4])
-        u = Multiindex(u_data_sequence)
-        v = Multiindex(v_data_sequence)
-        # when
-        equal = u == v
-        # then
-        self.assertFalse(equal)
-
     def test_leq(self):
         # given
         u = Multiindex([1, 3, 4, 2, 1])
@@ -94,24 +72,6 @@ class TestMultiindex(unittest.TestCase):
         # given
         u = Multiindex([1, 3, 4, 2, 1])
         v = Multiindex([1, 4, 5, 1, 1])
-        # when
-        leq = u <= v
-        # then
-        self.assertFalse(leq)
-
-    def test_leq_different_lengths(self):
-        # given
-        u = Multiindex([1, 2, 3, 0, 0])
-        v = Multiindex([3, 3, 3])
-        # when
-        leq = u <= v
-        # then
-        self.assertTrue(leq)
-
-    def test_non_leq_different_lengths(self):
-        # given
-        u = Multiindex([1, 2, 3, 0, 1])
-        v = Multiindex([3, 3, 3])
         # when
         leq = u <= v
         # then
@@ -152,33 +112,6 @@ class TestMultiindex(unittest.TestCase):
         neq = u != v
         # then
         self.assertTrue(neq)
-
-    def test_not_equal_if_false(self):
-        # given
-        u = Multiindex([3, 0, 4, 0])
-        v = Multiindex([3, 0, 4])
-        # when
-        neq = u != v
-        # then
-        self.assertFalse(neq)
-
-    def test_gt_if_false(self):
-        # given
-        u = Multiindex([3, 0, 4, 0])
-        v = Multiindex([3, 0, 5])
-        # when
-        greater = u > v
-        # then
-        self.assertFalse(greater)
-
-    def test_gt_if_true(self):
-        # given
-        u = Multiindex([3, 0, 4, 0])
-        v = Multiindex([3, 0, 3])
-        # when
-        greater = u > v
-        # then
-        self.assertTrue(greater)
 
     def test_ge_if_eq(self):
         # given

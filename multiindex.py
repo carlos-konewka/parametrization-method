@@ -17,23 +17,10 @@ class Multiindex:
         return len(self._data)
 
     def __eq__(self, other: Multiindex) -> bool:
-        if len(self._data) == len(other._data):
-            return np.array_equiv(self._data, other._data)
-        d1, d2 = (self._data, other._data) if len(self._data) < len(other._data) else (other._data, self._data)
-        short_len = len(d1)
-        first_part_cmp = np.array_equiv(d1, d2[:short_len])
-        second_part_cmp = not d2[short_len:].any()
-        return first_part_cmp and second_part_cmp
+        return np.array_equiv(self._data, other._data)
 
     def __le__(self, other: Multiindex) -> bool:
-        for i, j in zip(self._data, other._data):
-            if i > j:
-                return False
-        if len(self._data) <= len(other._data):
-            return True
-        if not self._data[len(other._data):].any():
-            return True
-        return False
+        return (self._data <= other._data).prod() != 0
 
     def __lt__(self, other: Multiindex) -> bool:
         if self <= other and not self == other:
@@ -48,3 +35,7 @@ class Multiindex:
 
     def __gt__(self, other: Multiindex) -> bool:
         return other < self
+
+    def __hash__(self):
+        data_list = self._data.tolist()
+        return hash(tuple(data_list))
