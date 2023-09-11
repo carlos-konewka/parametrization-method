@@ -1,30 +1,57 @@
 from __future__ import annotations
-from typing import Iterable, Tuple
+
+import copy
+from typing import Dict, List, Collection
 
 import numpy as np
 
+from multiindex import Multiindex
+
 
 class Jet:
-    def __init__(self, data: Iterable) -> None:
-        self._data = np.asarray(data, dtype=np.float64)
+    def __init__(self, data: Collection | Dict) -> None:
+        self._derivatives: Dict[Multiindex, float] = {}
+        if isinstance(data, Dict):
+            self._derivatives = copy.deepcopy(data)
+        else:
+            var_indices = Jet._create_var_multiindices(len(data))
+            for idx, cof in zip(var_indices, data):
+                self._derivatives[idx] = float(cof)
 
     @property
-    def data(self) -> np.ndarray:
-        return np.copy(self._data)
+    def derivatives(self) -> Dict[Multiindex, float]:
+        return copy.deepcopy(self._derivatives)
+
+    def __len__(self) -> int:
+        return len(self._derivatives)
 
     def __add__(self, other: Jet) -> Jet:
-        data1, data2 = Jet._align_with_zeros(self._data, other._data)
-        result = data1 + data2
+        short_dict, long_dict = self._derivatives, other._derivatives
+        if len(self) > len(other):
+            short_dict, long_dict = long_dict, short_dict
+        result = copy.deepcopy(long_dict)
+        for k in long_dict.keys():
+            result[k] += short_dict[k]
         return Jet(result)
 
     def __sub__(self, other: Jet) -> Jet:
-        data1, data2 = Jet._align_with_zeros(self._data, other._data)
-        result = data1 - data2
+        if len(self._derivatives) >= len(other._derivatives):
+            result = copy.deepcopy(self._derivatives)
+            for k, v in other._derivatives.items():
+                result[k] -= v
+            return Jet(result)
+        result = copy.deepcopy(other._derivatives)
+        for k in result.keys():
+            result[k] = - result[k]
+        for k in other._derivatives.keys():
+            result[k] -= other._derivatives[k]
         return Jet(result)
 
     @staticmethod
-    def _align_with_zeros(array1: np.ndarray, array2: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
-        max_len = max(len(array1), len(array2))
-        a1 = np.append(array1, np.zeros(max_len - len(array1), dtype=np.float64))
-        a2 = np.append(array2, np.zeros(max_len - len(array2), dtype=np.float64))
-        return a1, a2
+    def _create_var_multiindices(length: int) -> List[Multiindex]:
+        result = []
+        for i in range(length):
+            data = np.zeros(length, dtype=np.int64)
+            data[i] = 1
+            result.append(Multiindex(data))
+        return result

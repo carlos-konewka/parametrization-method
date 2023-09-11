@@ -140,6 +140,18 @@ class TestMultiindex(unittest.TestCase):
         # then
         self.assertFalse(ge)
 
+    def test_range(self):
+        # given
+        variables = 3
+        deg = 2
+        # when
+        multiindices = Multiindex.get_range(variables, deg)
+        # then
+        multiindices_data = [tuple(index.data) for index in multiindices]
+        expected = [(0, 0, 0), (1, 0, 0), (0, 1, 0), (0, 0, 1), (2, 0, 0), (1, 1, 0), (1, 0, 1), (0, 2, 0), (0, 1, 1),
+                    (0, 0, 2)]
+        self.assertListEqual(multiindices_data, expected)
+
 
 if __name__ == '__main__':
     unittest.main()

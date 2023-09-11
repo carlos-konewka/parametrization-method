@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from typing import Iterable
+from functools import cmp_to_key
+from itertools import product
+from typing import Iterable, Tuple
 
 import numpy as np
 
@@ -39,3 +41,22 @@ class Multiindex:
     def __hash__(self):
         data_list = self._data.tolist()
         return hash(tuple(data_list))
+
+    @staticmethod
+    def get_range(variables: int, deg: int) -> Iterable[Multiindex]:
+        all_tuples = filter(lambda x: sum(x) <= deg, product(range(deg + 1), repeat=variables))
+
+        def compare_tuples(u: Tuple[int], v: Tuple[int]) -> int:
+            s_u, s_v = sum(u), sum(v)
+            if s_u != s_v:
+                return int(s_u > s_v) - int(s_u < s_v)
+            for el_u, el_v in zip(u, v):
+                if el_u > el_v:
+                    return -1
+                elif el_u < el_v:
+                    return 1
+            return 0
+
+        sorted_tuples = sorted(all_tuples, key=cmp_to_key(compare_tuples))
+        result = [Multiindex(idx) for idx in sorted_tuples]
+        return result
