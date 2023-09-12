@@ -28,6 +28,15 @@ class TestMultiindex(unittest.TestCase):
         self.assertEquals(data.dtype, 'int64')
         self.assertListEqual(list(data), list(data_sequence))
 
+    def test_zero_index(self):
+        # given
+        variables = 4
+        # when
+        index = Multiindex.zero_index(variables)
+        # then
+        expected = np.zeros(variables, dtype=np.int64)
+        self.assertTrue(np.array_equiv(index.data, expected))
+
     def test_equality(self):
         # given
         u_data_sequence = np.asarray([1, 2, 3, 4])
@@ -139,6 +148,23 @@ class TestMultiindex(unittest.TestCase):
         ge = u >= v
         # then
         self.assertFalse(ge)
+
+    def test_subtraction(self):
+        # given
+        u = Multiindex([3, 5, 7])
+        v = Multiindex([3, 4, 3])
+        # when
+        result = u - v
+        # then
+        expected = Multiindex([0, 1, 4])
+        self.assertEqual(result, expected)
+
+    def test_subtraction_incorrect_arguments(self):
+        # given
+        u = Multiindex([3, 2, 7])
+        v = Multiindex([3, 4, 3])
+        # when & then
+        self.assertRaises(Exception, u.__sub__, v)
 
     def test_range(self):
         # given
