@@ -11,6 +11,17 @@ class Multiindex:
     def __init__(self, data: Iterable) -> None:
         self._data = np.asarray(data, dtype=np.int64)
 
+    @staticmethod
+    def zero_index(variables: int) -> Multiindex:
+        data = np.zeros(variables, dtype=np.int64)
+        return Multiindex(data)
+
+    @staticmethod
+    def one_hot_index(variables: int, idx: int) -> Multiindex:
+        data = np.zeros(variables, dtype=np.int64)
+        data[idx] = 1
+        return Multiindex(data)
+
     @property
     def data(self) -> np.ndarray:
         return np.copy(self._data)
@@ -37,6 +48,12 @@ class Multiindex:
 
     def __gt__(self, other: Multiindex) -> bool:
         return other < self
+
+    def __sub__(self, other: Multiindex) -> Multiindex:
+        if not other <= self:
+            raise Exception("Subtraction - result has negative elements!")
+        data = self._data - other._data
+        return Multiindex(data)
 
     def __hash__(self):
         data_list = self._data.tolist()
